@@ -22,6 +22,35 @@ os.makedirs(TREE, exist_ok=True)
 os.makedirs(SETT, exist_ok=True)
 
 rows = list(csv.DictReader(open(SRC, encoding="utf-8-sig")))
+
+# ------------------------------------------------- اصلاحات پس از فایل ۱۴۰۴ (دستی، مستند)
+# مصوبهٔ ۷۹۲۴۰ هیئت وزیران (۲۷ تیر ۱۴۰۳ / ۲۲ مرداد ۱۴۰۳):
+#   ۱) نام «شاهین شهر و میمه» به «شاهین شهر» تغییر کرد.
+#   ۲) شهرستان «میمه و وزوان» به مرکزیت میمه از آن جدا شد.
+# اجرای رسمی (معرفی سرپرست فرمانداری، بیست‌ونهمین شهرستان اصفهان): مهر–آبان ۱۴۰۵.
+# شاهد: https://darsotoon.ir/news/586336 (ایرنا/اکووانیران)؛
+#        https://www.ettelaat.com/news/129371/ (۲ دی ۱۴۰۴)؛
+#        https://fa.wikipedia.org/wiki/شهرستان_میمه_و_وزوان
+# ⚠️ کد «۲۹» برای شهرستان جدید، کد داخلی این پروژه است؛ کد رسمی وزارت کشور منتشر نشده.
+CORRECTION_ROWS = []
+_SHAHINSHAHR, _MEYMEH_DIST, _ISFAHAN = "282", "1130", "12"
+_MEYMEH_COUNTY = "990001"
+for _r in rows:
+    if _r["Id"] == _SHAHINSHAHR:
+        CORRECTION_ROWS.append(["تغییر نام شهرستان", "شاهین شهرو میمه ← شاهین شهر",
+                                "مصوبه ۲۷ تیر ۱۴۰۳؛ اجرا ۱۴۰۵",
+                                "https://fa.wikipedia.org/wiki/شهرستان_میمه_و_وزوان"])
+        _r["Name"] = "شاهین شهر"
+rows.append({"Id": _MEYMEH_COUNTY, "ParentCountryDivisionId": _ISFAHAN,
+             "Name": "میمه و وزوان", "Code": "29", "DivisionType": "2"})
+CORRECTION_ROWS.append(["تشکیل شهرستان", "میمه و وزوان (مرکز: میمه) — بیست‌ونهمین شهرستان اصفهان",
+                        "تصویب ۲۷ تیر ۱۴۰۳؛ اجرا مهر ۱۴۰۵", "https://darsotoon.ir/news/586336"])
+for _r in rows:
+    if _r["Id"] == _MEYMEH_DIST:
+        _r["ParentCountryDivisionId"] = _MEYMEH_COUNTY
+        CORRECTION_ROWS.append(["انتقال بخش", "بخش میمه از شاهین شهر به شهرستان میمه و وزوان",
+                                "۱۴۰۵", "https://www.ettelaat.com/news/129371/"])
+
 by_id = {r["Id"]: r for r in rows}
 children = collections.defaultdict(list)
 for r in rows:
@@ -97,6 +126,8 @@ for p in provinces:
                             urban_rows.append([p["Name"], c["Name"], d["Name"], sub["Name"], z["Code"], z["Name"]])
 
 
+write_csv("corrections-1405.csv", ["نوع تغییر", "شرح", "تاریخ", "منبع"], CORRECTION_ROWS)
+
 write_csv("provinces.csv", ["کد استان", "نام استان", "شناسه"], prov_rows)
 write_csv("counties.csv", ["کد استان", "نام استان", "کد شهرستان", "نام شهرستان", "شناسه"], county_rows)
 write_csv("districts.csv", ["استان", "شهرستان", "کد بخش", "نام بخش", "شناسه"], district_rows)
@@ -133,7 +164,7 @@ for p in provinces:
     out = io.StringIO()
     w = out.write
     w(f"# استان {p['Name']} (کد {p['Code']})\n\n")
-    w("> تولیدخودکار از دادهٔ رسمی فایل جغرافیایی مرکز آمار ایران، سال ۱۴۰۴. ")
+    w("> تولیدخودکار از دادهٔ رسمی فایل جغرافیایی مرکز آمار ایران، سال ۱۴۰۴، با اعمال لایهٔ اصلاح مستند ۱۴۰۵ (`data/corrections-1405.csv`). ")
     w("سطح «آبادی» در فایل‌های `data/settlements/` به تفکیک استان آمده است.\n\n")
 
     counties = ordered(children[p["Id"]])
