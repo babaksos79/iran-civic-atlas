@@ -27,7 +27,7 @@ rows = list(csv.DictReader(open(SRC, encoding="utf-8-sig")))
 # مصوبهٔ ۷۹۲۴۰ هیئت وزیران (۲۷ تیر ۱۴۰۳ / ۲۲ مرداد ۱۴۰۳):
 #   ۱) نام «شاهین شهر و میمه» به «شاهین شهر» تغییر کرد.
 #   ۲) شهرستان «میمه و وزوان» به مرکزیت میمه از آن جدا شد.
-# اجرای رسمی (معرفی سرپرست فرمانداری، بیست‌ونهمین شهرستان اصفهان): مهر–آبان ۱۴۰۵.
+# اجرای رسمی (تشکیل و معرفی سرپرست فرمانداری، بیست‌ونهمین شهرستان اصفهان): ۲۰ مهر ۱۴۰۵.
 # شاهد: https://darsotoon.ir/news/586336 (ایرنا/اکووانیران)؛
 #        https://www.ettelaat.com/news/129371/ (۲ دی ۱۴۰۴)؛
 #        https://fa.wikipedia.org/wiki/شهرستان_میمه_و_وزوان
@@ -44,7 +44,8 @@ for _r in rows:
 rows.append({"Id": _MEYMEH_COUNTY, "ParentCountryDivisionId": _ISFAHAN,
              "Name": "میمه و وزوان", "Code": "29", "DivisionType": "2"})
 CORRECTION_ROWS.append(["تشکیل شهرستان", "میمه و وزوان (مرکز: میمه) — بیست‌ونهمین شهرستان اصفهان",
-                        "تصویب ۲۷ تیر ۱۴۰۳؛ اجرا مهر ۱۴۰۵", "https://darsotoon.ir/news/586336"])
+                        "تصویب ۲۷ تیر ۱۴۰۳؛ اجرا ۲۰ مهر ۱۴۰۵",
+                        "https://tasnimnews.ir/fa/news/1405/08/05/3733118"])
 for _r in rows:
     if _r["Id"] == _MEYMEH_DIST:
         _r["ParentCountryDivisionId"] = _MEYMEH_COUNTY

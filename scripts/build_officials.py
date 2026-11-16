@@ -153,7 +153,9 @@ def main() -> int:
     print(f"rows: {len(all_rows)}")
     print(f"provinces with entries: {len(provinces)} / 31")
     print(f"governors rows: {len(governors)} / 31")
-    print(f"county rows: {len(county_rows)} / 484")
+    county_total = len(list(csv.DictReader(
+        open(os.path.join(ROOT, "data", "counties.csv"), encoding="utf-8-sig"))))
+    print(f"county rows: {len(county_rows)} / {county_total}")
     print("status counts:", by_status)
     return 0
 
